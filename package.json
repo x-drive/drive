@@ -1,0 +1,21 @@
+{
+    "name": "dirve"
+    ,"version": "1.0.0"
+    ,"description": ""
+    ,"main": "index.js"
+    ,"preferGlobal": true
+    ,"scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+    ,"bin": {
+        "dirve": "bin/dirve"
+    }
+    ,"repository": {
+        "type": "git"
+        ,"url": "git+https://github.com/x-drive/drive.git"
+    }
+    ,"author": {
+        "name": "drive"
+    }
+    ,"license": "MIT"
+}
