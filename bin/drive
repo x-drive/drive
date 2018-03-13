@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const Liftoff = require("liftoff");
+const argv = require("minimist")(process.argv.slice(2));
+const path = require("path");
+const cli = new Liftoff({
+    "name": "drive"
+    ,"processTitle": "drive"
+    ,"moduleName": "drive"
+    ,"configName": "fis-conf"
+    ,"extensions": {
+        ".js": null
+    }
+});
+
+cli.launch({
+    "cwd": argv.r || argv.root
+    ,"configPath": argv.f || argv.file
+}, function(env) {
+    var fis  = require("../");
+    fis.require.paths.unshift(
+        path.join(env.cwd, "node_modules")
+    );
+    fis.require.paths.push(
+        path.join(path.dirname(__dirname), "node_modules")
+    );
+    fis.cli.run(argv, env);
+});
