@@ -41,6 +41,18 @@ fis.match("/server/**.js", {
         ,"useMap": false
         ,"release": "/server/$1"
     })
+    .match("/@server/conf/(**)", {
+        "optimizer": null
+        ,"useCompile": false
+        ,"isJsLike": false
+        ,"useCache": false
+        ,"useHash": false
+        ,"isJsLike": false
+        ,"isCssLike": false
+        ,"useMap": false
+        ,"release":"/server/conf/@conf/$1"
+        ,"isMod": false
+    })
     .match("/component_modules/{(*).js,**/(*).js}", {
         "isMod": true
         ,"moduleId": "$1"
