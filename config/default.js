@@ -1,3 +1,8 @@
+const plugins = {
+    define: require('../plugins/postprocessor/define'),
+    framwork: require('../plugins/postpackager/framework-conf')
+}
+
 fis.match("*.less", {
     "parser": fis.plugin("less")
     ,"rExt": ".css"
@@ -14,9 +19,11 @@ fis.media("prod")
         "optimizer": fis.plugin("png-compressor")
     });
 
-var version = fis.config.get("version");
-var name = fis.config.get("name");
-var urlPrefix = fis.config.get("urlPrefix");
+    fis.config.set("settings.optimizer.uglify-js", {
+        "mangle": {
+            "except": "exports, module, require, define"
+        }
+    });
 
 fis.match("/server/**.js", {
         "optimizer": null
@@ -53,29 +60,45 @@ fis.match("/server/**.js", {
         ,"release":"/server/conf/@conf/$1"
         ,"isMod": false
     })
-    .match("/component_modules/{(*).js,**/(*).js}", {
-        "isMod": true
-        ,"moduleId": "$1"
+    .match("/component_modules/(**.js)", {
+        id: '$1',
+        moduleId : '$1',
+        isMod : true,
+        useHash : false,
+        "release": "/public/c/$1"
+        ,url : '${urlPrefix}/c/$1',
     })
     .match("/component_modules/(**)", {
-        "release": "/public/c/$1"
-        ,"url": `${urlPrefix}/c/${name}/${version}/$1`
+        "release": "/public/c/$1"  
+        ,url : '${urlPrefix}/c/$1',
     })
-    .match("/components/(**)", {
-        "release": `/public/c/${name}/${version}/$1`
-        ,"url": `${urlPrefix}/c/${name}/${version}/$1`
+    .match("/components/(**.js)", {
+        id : '${name}/${version}/$1',
+        moduleId : '${name}/${version}/$1',
+        isMod : true,
+        isComponent : true,
+        useHash : false,
+        "release": '/public/c/${name}/${version}/$1'
+        ,"url":'${urlPrefix}/c/${name}/${version}/$1',
+    })
+    .match("/components/(**)", {  
+        "release": '/public/c/${name}/${version}/$1'
+        ,"url":'${urlPrefix}/c/${name}/${version}/$1',
     })
     .match("/views/(**)", {
-        "release": `/public/${name}/${version}/$1`
+        isViews : true,
+        "release": '/public/${name}/${version}/$1',
+        url: '${urlPrefix}/${name}/${version}/$1'
     })
-    .match("README.md", {
-        "release": false
-    });
+    .match('/components', {
+        release: false
+    })
+    .match('/component_modules', {
+        release: false
+    })
+    
+fis.hook('commonjs')
 
-fis.config.set("settings.optimizer.uglify-js", {
-    "mangle": {
-        "except": "exports, module, require, define"
-    }
-});
-
-fis.hook("commonjs");
+fis.match("::package", {
+    postpackager: plugins.framwork  
+})
