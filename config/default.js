@@ -62,31 +62,40 @@ fis.match("/server/**.js", {
     })
     .match("/component_modules/(**.js)", {
         id: '$1',
-        moduleId : '$1',
-        isMod : true,
-        useHash : false,
+        moduleId: '$1',
+        isMod: true,
+        useHash: false,
         "release": "/public/c/$1"
-        ,url : '${urlPrefix}/c/$1',
+        ,url: '${urlPrefix}/c/$1',
     })
     .match("/component_modules/(**)", {
         "release": "/public/c/$1"  
-        ,url : '${urlPrefix}/c/$1',
-    })
-    .match("/components/(**.js)", {
-        id : '${name}/${version}/$1',
-        moduleId : '${name}/${version}/$1',
-        isMod : true,
-        isComponent : true,
-        useHash : false,
-        "release": '/public/c/${name}/${version}/$1'
-        ,"url":'${urlPrefix}/c/${name}/${version}/$1',
+        ,url: '${urlPrefix}/c/$1',
     })
     .match("/components/(**)", {  
         "release": '/public/c/${name}/${version}/$1'
         ,"url":'${urlPrefix}/c/${name}/${version}/$1',
     })
+    .match("/components/(**).less", {
+        id: '${name}/${version}/$1.css',
+        moduleId: '${name}/${version}/$1.css',
+        isMod: true,
+        useSprite: true,
+        useHash: false,
+        url: '${urlPrefix}/c/${name}/${version}/$1.$2',
+        release: '/public/c/${name}/${version}/$1.$2'
+    })
+    .match("/components/(**.js)", {
+        id: '${name}/${version}/$1',
+        moduleId: '${name}/${version}/$1',
+        isMod: true,
+        isComponent: true,
+        useHash: false,
+        "release": '/public/c/${name}/${version}/$1'
+        ,"url":'${urlPrefix}/c/${name}/${version}/$1',
+    })
     .match("/views/(**)", {
-        isViews : true,
+        isViews: true,
         "release": '/public/${name}/${version}/$1',
         url: '${urlPrefix}/${name}/${version}/$1'
     })
