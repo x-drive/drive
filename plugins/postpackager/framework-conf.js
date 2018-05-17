@@ -81,12 +81,19 @@ function makeComponentModulesAlias(componentFile, map, ret) {
     }
 }
 
+/**
+ * 是否开启combo服务
+ */
+function isProd() {
+    return fis.project.currentMedia() === 'prod'
+}
+
 module.exports = function (ret, conf, settings, opt){
     var map = fis.config.get('framework', {});
     var aliasConfig = map.alias || {};
     map.version = fis.config.get('version');
     map.name = fis.config.get('name');
-    map.combo = !!opt.pack;
+    map.combo = isProd()
     map.urlPattern = map.urlPattern || '/c/%s';
     map.comboPattern = map.comboPattern || '/??%s';
     map.hash = fis.util.md5(Date.now() + '-' + Math.random());
