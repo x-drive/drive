@@ -20,6 +20,9 @@ fis.media("prod")
             }
         })
     })
+    .match('::package', {
+        spriter: fis.plugin('csssprites')
+    })      
 
 fis.match("*.less", {
     "parser": fis.plugin("less")
@@ -66,6 +69,7 @@ fis.match("/server/**.js", {
     moduleId: '$1',
     isMod: true,
     useHash: false,
+    useSameNameRequire: true,
     "release": "/public/c/$1"
     ,url: '${urlPrefix}/c/$1'
 })
@@ -125,15 +129,13 @@ fis.match("/server/**.js", {
     "release": '/public/${name}/${version}/$1',
     url: '${urlPrefix}/${name}/${version}/$1'
 })
-.match("/views/(**)", {
-    isViews: true,
-    "release": '/public/${name}/${version}/$1',
-    url: '${urlPrefix}/${name}/${version}/$1'
-})
 .match('/components', {
     release: false
 })
 .match('/component_modules', {
+    release: false
+})
+.match('.DS_Store', {
     release: false
 })
 
@@ -147,6 +149,14 @@ const POST_PACKAGER = [plugins.framwork];
 switch (fis.get("project.mode")) {
     case "mobile":
         POST_PACKAGER.push(plugins.genRouter)
+    break;
+    case "desktop":
+        fis.media("prod").match('**.{css, less}',{
+            postprocessor : fis.plugin("autoprefixer",{
+                "browsers": ["> 1%","last 2 versions"]
+                ,"cascade": true
+            })
+        })
     break;
 }
 
