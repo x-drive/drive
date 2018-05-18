@@ -4,9 +4,9 @@ const Liftoff = require("liftoff");
 const argv = require("minimist")(process.argv.slice(2));
 const path = require("path");
 const cli = new Liftoff({
-    "name": "Drive"
-    ,"processTitle": "Drive"
-    ,"moduleName": "drive"
+    "name": "Dirve"
+    ,"processTitle": "Dirve"
+    ,"moduleName": "Dirve"
     ,"configName": "fis-conf"
     ,"extensions": {
         ".js": null
