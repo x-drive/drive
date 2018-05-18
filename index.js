@@ -10,4 +10,6 @@ Object.defineProperty(global, "drive", {
     ,"value" : fis
 });
 
-require("./config/default");
+fis.on("conf:loaded", function(){
+    require("./config/default");
+});
