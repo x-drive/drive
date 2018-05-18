@@ -6,7 +6,7 @@ DIRVE
 
     ```shell
     cd /usr/local/bin
-    ln -s drive-dev <project>/bin/drive
+    ln -s <project>/bin/drive drive-dev
     ```
 
 1. 找个符合规则的项目
