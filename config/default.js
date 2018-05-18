@@ -83,7 +83,7 @@ fis.match("/server/**.js", {
     release: '/views/c/$1'
 })
 .match("/component_modules/(**)", {
-    "release": "/public/c/$1"  
+    "release": "/public/c/$1"
     ,url: '${urlPrefix}/c/$1',
 })
 .match("/components/(**).{styl,less,css,scss,sass}", {
@@ -109,7 +109,7 @@ fis.match("/server/**.js", {
     isHtmlLike: true,
     release: '/views/c/${name}/${version}/$1'
 })
-.match("/components/(**)", {  
+.match("/components/(**)", {
     "release": '/public/c/${name}/${version}/$1'
     ,"url":'${urlPrefix}/c/${name}/${version}/$1'
 })
@@ -139,10 +139,17 @@ fis.match("/server/**.js", {
 
 fis.hook('commonjs')
 
-fis.match('*.html', {    
+fis.match('*.html', {
     preprocessor: plugins.rand
 })
 
+const POST_PACKAGER = [plugins.framwork];
+switch (fis.get("project.mode")) {
+    case "mobile":
+        POST_PACKAGER.push(plugins.genRouter)
+    break;
+}
+
 fis.match("::package", {
-    postpackager: [plugins.framwork, plugins.genRouter]
+    postpackager: POST_PACKAGER
 })
