@@ -2,7 +2,6 @@ const path = require('path')
 const fs = require('fs')
 
 module.exports = function injectRouterMap(ret, conf, settings, opt) {
-    if (!fis.get('project.mobile')) return
     const DIR = fis.project.getProjectPath('/components/pages')
     var routeMap = {
         _pwd: '',
@@ -22,11 +21,11 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
             }
         }
     }
-    
+
     function resolvePath(dir) {
         return dir.split(path.sep).join('/')
     }
-    
+
     function getCloseSub(map) {
         var el = map
         while(el) {
@@ -36,22 +35,22 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
             el = el._parent
         }
     }
-    
+
     function getReleativeSubPath(realPath) {
         var index = realPath.lastIndexOf('@sub')
         if (index !== -1) {
             return resolvePath(realPath.slice(index + 4))
         }
     }
-    
+
     function getComponentName(realPath) {
         return Camelize(resolvePath(path.dirname(realPath).replace(DIR,'').replace(/\/@sub/g,'')))
     }
-    
+
     function getComponentFile(realPath) {
         return resolvePath(realPath.replace(DIR,''))
     }
-    
+
     function Camelize(prop){
         if (prop.indexOf('/') === 0) {
             prop = prop.slice(1)
@@ -60,7 +59,7 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
             return letter.toUpperCase()
         })
     }
-    
+
     function genRouterMap(dir,map,parent){
         var fss = fs.readdirSync(dir)
         map._parent = parent
