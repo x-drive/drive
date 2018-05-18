@@ -4,8 +4,8 @@ const Liftoff = require("liftoff");
 const argv = require("minimist")(process.argv.slice(2));
 const path = require("path");
 const cli = new Liftoff({
-    "name": "drive"
-    ,"processTitle": "drive"
+    "name": "Drive"
+    ,"processTitle": "Drive"
     ,"moduleName": "drive"
     ,"configName": "fis-conf"
     ,"extensions": {
@@ -17,7 +17,7 @@ cli.launch({
     "cwd": argv.r || argv.root
     ,"configPath": argv.f || argv.file
 }, function(env) {
-    var fis  = require("../");
+    const fis  = require("../");
     fis.require.paths.unshift(
         path.join(env.cwd, "node_modules")
     );
