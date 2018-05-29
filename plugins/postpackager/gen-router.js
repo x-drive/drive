@@ -6,7 +6,7 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
     var routeMap = {
         _pwd: '',
         _parent: '',
-        '/': {}
+        root: {}
     }
     function removeCircular(obj) {
         for(var i in obj) {
@@ -99,9 +99,15 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
         })
         return map
     }
-    genRouterMap(DIR, routeMap['/'],routeMap)
+    genRouterMap(DIR, routeMap.root, routeMap)
     removeCircular(routeMap)
-    routeMap = JSON.stringify(routeMap)
+    var root = routeMap.root
+    delete routeMap.root
+    root.subRoutes = routeMap
+    routeMap = JSON.stringify({
+        '/': root
+    }, null ,4)
+    root = null
     var hasChange = false
     var routerFile = ret.src['/components/router/router.js']
     var content = routerFile.getContent()
