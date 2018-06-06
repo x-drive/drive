@@ -22,7 +22,7 @@ fis.media("prod")
     })
     .match('::package', {
         spriter: fis.plugin('csssprites')
-    })      
+    })
 
 fis.match("*.less", {
     "parser": fis.plugin("less")
@@ -146,20 +146,47 @@ fis.match('*.html', {
 })
 
 const POST_PACKAGER = [plugins.framwork];
+
+const isObject = require("../components/util").isObject;
+
+// 插件相关设置
+var pluginsConf = fis.get("project.plugins");
+
+// css 自动补完插件配置或开关
+var customAutoPrefix = pluginsConf && pluginsConf.autoprefix || null;
+// 默认自动补完配置
+var autoPrefixConf = {
+    "browsers": ["> 1%", "last 4 versions"]
+    ,"cascade": true
+    ,"flexboxfixer": true
+};
+
+if (customAutoPrefix) {
+    if (isObject(customAutoPrefix)) {
+        autoPrefixConf = Object.assign(autoPrefixConf, customAutoPrefix);
+    }
+}
+
 switch (fis.get("project.mode")) {
     case "mobile":
-        POST_PACKAGER.push(plugins.genRouter)
+        POST_PACKAGER.push(plugins.genRouter);
+        if (customAutoPrefix) {
+            fis.media("prod").match('**.{css, less}',{
+                postprocessor : fis.plugin("autoprefixer", autoPrefixConf)
+            });
+        }
     break;
+
     case "desktop":
         fis.media("prod").match('**.{css, less}',{
-            postprocessor : fis.plugin("autoprefixer",{
-                "browsers": ["> 1%","last 2 versions"]
-                ,"cascade": true
-            })
-        })
+            postprocessor : fis.plugin("autoprefixer", autoPrefixConf)
+        });
     break;
 }
 
+customAutoPrefix = null;
+autoPrefixConf = null;
+
 fis.match("::package", {
     postpackager: POST_PACKAGER
-})
+});
