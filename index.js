@@ -40,3 +40,7 @@ fis.on("lookup:file", function(info, file){
 fis.on("conf:loaded", function(){
     require("./config/default");
 });
+
+fis.on("release:start", function(){
+    fis.cli.version();
+});
