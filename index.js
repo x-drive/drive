@@ -41,6 +41,11 @@ fis.on("conf:loaded", function(){
     require("./config/default");
 });
 
+// release 的时候是否已经显示过版本信息
+var showed = false;
 fis.on("release:start", function(){
-    fis.cli.version();
+    if (!showed) {
+        fis.cli.version();
+        showed = true;
+    }
 });
