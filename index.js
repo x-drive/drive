@@ -37,8 +37,17 @@ fis.on("lookup:file", function(info, file){
     }
 });
 
+// 不同模式下对应的配置文件
+const MODE_CONF = {
+    "micro": "micro"
+    ,"mobile": "default"
+    ,"desktop": "default"
+}
+
 fis.on("conf:loaded", function(){
-    require(`./config/${fis.get("project.mode") === "micro" ? "micro" : "default"}`);
+    var confName = MODE_CONF[fis.get("project.mode")] || "default";
+    require(`./config/${confName}`);
+    confName = null;
 });
 
 // release 的时候是否已经显示过版本信息
