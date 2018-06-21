@@ -57,11 +57,16 @@ if (imageReleaseDir) {
     imageReleaseDir = "";
 }
 
+// 有 cdn 的话设置配置到指定字段
+// BUG
+// 目前 fis3 在 match 里声明 domain 无效，只能在 project.domain 声明
 if (imageDomain) {
     fis.set("project.domain", `${imageDomain}/${imageReleaseDir}`);
 }
 
 fis.set("project.fileType.text", "wxml,wxss");
+
+// 编译规则
 
 fis.media("prod")
     .match("*.{css, less, wxss}", {
@@ -120,9 +125,6 @@ fis.match("*.tpl", {
         ,"useMap": false
         ,"useHash": false
     })
-    // .match("/pages/**.js", {
-    //     "postprocessor": PLUGINS.handlMicroComponents
-    // })
     .match('.DS_Store', {
         "release": false
     })
@@ -142,6 +144,7 @@ fis.match("*.tpl", {
         "release": false
     });
 
+// 资源文件整理
 fis.match("/pages/(**.{png, jpg})", {
     "release": `/public/${imageReleaseDir}$1`
     ,"url" : '/$1'
@@ -149,17 +152,16 @@ fis.match("/pages/(**.{png, jpg})", {
 .match("/components/(**.{png, jpg})", {
     "release": `/public/${imageReleaseDir}c/$1`
     ,"url" : '/c/$1'
-})
+});
 
+// 各种业务处理
 fis.match("*.js", {
     "preprocessor": PLUGINS.handlMicroAppJs
 });
-
 PLUGINS.handlMicroAppJson.init();
 fis.match("/**.json", {
     "preprocessor": PLUGINS.handlMicroAppJson
 });
-
 fis.match("::package", {
     "postpackager": [PLUGINS.handlMicroComponents]
 });
