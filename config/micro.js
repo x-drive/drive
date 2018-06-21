@@ -2,6 +2,7 @@
 const PLUGINS = {
     "handlMicroAppJson": require("../plugins/preprocessor/handl-micro-app-json")
     ,"handlMicroAppJs": require("../plugins/preprocessor/handl-micro-app-js")
+    ,"handlMicroComponents": require("../plugins/postpackager/handl-micro-components")
 }
 
 /**
@@ -119,6 +120,9 @@ fis.match("*.tpl", {
         ,"useMap": false
         ,"useHash": false
     })
+    // .match("/pages/**.js", {
+    //     "postprocessor": PLUGINS.handlMicroComponents
+    // })
     .match('.DS_Store', {
         "release": false
     })
@@ -154,4 +158,8 @@ fis.match("*.js", {
 PLUGINS.handlMicroAppJson.init();
 fis.match("/**.json", {
     "preprocessor": PLUGINS.handlMicroAppJson
+});
+
+fis.match("::package", {
+    "postpackager": [PLUGINS.handlMicroComponents]
 });
