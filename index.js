@@ -38,7 +38,7 @@ fis.on("lookup:file", function(info, file){
 });
 
 fis.on("conf:loaded", function(){
-    require("./config/default");
+    require(`./config/${fis.get("project.mode") === "micro" ? "micro" : "default"}`);
 });
 
 // release 的时候是否已经显示过版本信息
