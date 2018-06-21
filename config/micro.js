@@ -133,6 +133,9 @@ fis.match("*.tpl", {
     })
     .match("/@scripts/**", {
         "release": false
+    })
+    .match("/**.md", {
+        "release": false
     });
 
 fis.match("/pages/(**.{png, jpg})", {
