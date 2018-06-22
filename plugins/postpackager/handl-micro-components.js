@@ -46,7 +46,7 @@ module.exports = function (ret, conf, settings, opt) {
             let components = content.match(ALL_COMPONENT_REG_EXP);
 
             if (components && components.length) {
-                let pageJsonPath = `${dirs[file.subdirname]}/page.json`;
+                let pageJsonPath = `${dirs[file.subdirname]}/${file.filename}.json`;
                 let hasJson = fis.util.isFile(pageJsonPath);
 
                 let pageJson;
