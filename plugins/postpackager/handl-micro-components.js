@@ -55,18 +55,21 @@ module.exports = function (ret, conf, settings, opt) {
                 } else {
                     pageJson = {};
                 }
-                pageJson.usingComponents = pageJson.usingComponents || {};
+
+                // 每次都重新生成
+                pageJson.usingComponents = {};
 
                 while(components.length) {
                     let comStr = components.pop();
                     let com = comStr.match(COMPONENT_REG_EXP);
                     com = com && com[1] || null;
                     if (com) {
-                        pageJson.usingComponents[camelize2line(com)] = `/components/${com}/${com}`;
+                        pageJson.usingComponents[`component-${camelize2line(com)}`] = `/components/${com}/${com}`;
                     }
                     content = content.replace(comStr, "");
                 }
                 file.setContent(content);
+
                 fis.util.write(pageJsonPath, JSON.stringify(pageJson, 4, 4));
             }
         }
