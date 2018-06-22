@@ -62,7 +62,7 @@ module.exports = function (ret, conf, settings, opt) {
                     let com = comStr.match(COMPONENT_REG_EXP);
                     com = com && com[1] || null;
                     if (com) {
-                        pageJson.usingComponents[camelize2line(com)] = `/components/${com}`;
+                        pageJson.usingComponents[camelize2line(com)] = `/components/${com}/${com}`;
                     }
                     content = content.replace(comStr, "");
                 }
