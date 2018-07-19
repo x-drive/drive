@@ -50,8 +50,8 @@ var imageReleaseDir = fis.get("project.image-release-dir");
 if (imageReleaseDir) {
     // 处理环境文件夹
     imageReleaseDir = imageReleaseDir.replace(/^\//, "").replace("{envdir}", releaseDir);
-    if (!/\/$/.test(imageReleaseDir)) {
-        imageReleaseDir = imageReleaseDir + "/";
+    if (/\/$/.test(imageReleaseDir)) {
+        imageReleaseDir = imageReleaseDir.replace(/\/$/, "");
     }
 } else {
     imageReleaseDir = "";
