@@ -146,11 +146,11 @@ fis.match("*.tpl", {
 
 // 资源文件整理
 fis.match("/pages/(**.{png, jpg})", {
-    "release": `/public/${imageReleaseDir}$1`
+    "release": `/public/${imageReleaseDir}/$1`
     ,"url" : '/$1'
 })
 .match("/components/(**.{png, jpg})", {
-    "release": `/public/${imageReleaseDir}c/$1`
+    "release": `/public/${imageReleaseDir}/c/$1`
     ,"url" : '/c/$1'
 });
 
