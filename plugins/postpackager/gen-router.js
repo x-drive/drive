@@ -48,6 +48,7 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
     }
 
     function getComponentFile(realPath) {
+        realPath = resolvePath(realPath)
         return resolvePath(realPath.replace(DIR,''))
     }
 
