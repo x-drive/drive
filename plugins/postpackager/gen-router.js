@@ -44,6 +44,7 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
     }
 
     function getComponentName(realPath) {
+		realPath = resolvePath(realPath);
         return Camelize(resolvePath(path.dirname(realPath).replace(DIR,'').replace(/\/@sub/g,'')))
     }
 
