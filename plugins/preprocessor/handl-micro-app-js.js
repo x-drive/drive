@@ -32,6 +32,7 @@ function handler(content, file, conf) {
         if (!body.type || body.type !== envtype) {
             body.type = envtype;
         }
+        body.buildTime = new Date().toISOString()
         content = content.replace(
             JSON_BODY_REGEXP
             ,JSON.stringify(body, 4, 4)
