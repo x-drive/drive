@@ -99,6 +99,7 @@ module.exports = function (ret, conf, settings, opt){
     map.hash = fis.util.md5(Date.now() + '-' + Math.random());
     map.alias = {};
     map.deps = {};
+    map.prefix = map.prefix || '__DIRVE__' + (fis.config.get('urlPrefix').toUpperCase() || '') + '/'
     makeComponentModulesAlias(ret.src['/component.json'], map, ret);
     fis.util.map(aliasConfig, function(name, subpath){
         var file = ret.src['/' + subpath.replace(/^\//, '')];
