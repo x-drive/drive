@@ -72,7 +72,7 @@ module.exports = function injectRouterMap(ret, conf, settings, opt) {
     function genRouterMap(dir, map, parent) {
         var fss = fs.readdirSync(dir)
         map._parent = parent
-        map._pwd = dir.replace(DIR, '')
+        map._pwd = resolvePath(dir).replace(DIR, '')
         fss.forEach(function(f) {
             var basename = path.basename(f),
                 realPath = path.resolve(dir, f)
