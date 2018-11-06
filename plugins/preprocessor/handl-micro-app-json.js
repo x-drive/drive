@@ -121,5 +121,6 @@ module.exports.init = function() {
     if (!inited) {
         init();
         fis.emit("plugin:appjson:inited", modPages);
+        modPages = null;
     }
 }
