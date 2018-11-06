@@ -20,6 +20,17 @@ function camelize2line(str) {
     });
 }
 
+// 公共组件配置对象
+var componentsModules = {};
+fis.on("plugin:componentjson:inited", function(data){
+    if (data) {
+        Object.keys(data).forEach(function(com){
+            // 预先生成公共组件的配置关系
+            componentsModules[`${camelize2line(com)}`] = data[com];
+        });
+    }
+});
+
 module.exports = function (ret, conf, settings, opt) {
     var pages = Object.keys(ret.src).filter(function(name){
         return PAGE_TEST_REG_EXP.test(name);
@@ -64,7 +75,18 @@ module.exports = function (ret, conf, settings, opt) {
                     let com = comStr.match(COMPONENT_REG_EXP);
                     com = com && com[1] || null;
                     if (com) {
-                        pageJson.usingComponents[`${camelize2line(com)}`] = `/components/${com}/${com}`;
+                        let comPath;
+                        let comName = camelize2line(com);
+                        // 公共组件版本
+                        let componentModuleVersion = componentsModules[comName];
+
+                        if (componentModuleVersion) {
+                            // 生成公共组件的声明路径
+                            comPath = `/component_modules/${componentModuleVersion}/${com}/${com}`;
+                        } else {
+                            comPath = `/components/${com}/${com}`;
+                        }
+                        pageJson.usingComponents[comName] = comPath;
                     }
                     content = content.replace(comStr, "");
                 }
