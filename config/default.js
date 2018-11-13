@@ -1,8 +1,20 @@
+var argv = {}
+process.argv.forEach(function(item){
+    if(item.indexOf("=") !== -1){
+        item = item.split("=")
+        argv[item[0]] = item[1] || undefined
+    }
+})
+
 const plugins = {
     framwork: require('../plugins/postpackager/framework-conf'),
     rand: require('../plugins/preprocessor/rand'),
-    genRouter: require('../plugins/postpackager/gen-router')
+    genRouter: require('../plugins/postpackager/gen-router'),
+    LessPluginTheme: require('../plugins/preprocessor/handl-theme')
 }
+
+const theme = argv.theme || fis.get('project.theme')
+const THEME_PATH = '@theme/' + theme
 
 fis.media("prod")
     .match("*.{css, less}", {
@@ -25,7 +37,11 @@ fis.media("prod")
     })
 
 fis.match("*.less", {
-    "parser": fis.plugin("less")
+    "parser": fis.plugin("less-2.x", {
+        plugins: [new plugins.LessPluginTheme({
+            theme
+        })]
+    })
     ,"rExt": ".css"
 })
 
@@ -90,7 +106,7 @@ fis.match("/server/**.js", {
     "release": "/public/c/$1"
     ,url: '${urlPrefix}/c/$1',
 })
-.match("/components/(**).{styl,less,css,scss,sass}", {
+.match("/components/(**).{styl,less,css,scss,sass}", Object.assign({
     id: '${name}/${version}/$1.css',
     moduleId: '${name}/${version}/$1.css',
     isMod: true,
@@ -98,7 +114,12 @@ fis.match("/server/**.js", {
     useHash: false,
     url: '${urlPrefix}/c/${name}/${version}/$1.css',
     release: '/public/c/${name}/${version}/$1.css'
-})
+}, theme && {
+    id: THEME_PATH +'/${name}/${version}/$1.css',
+    moduleId: THEME_PATH +'/${name}/${version}/$1.css',
+    url: '${urlPrefix}/c/' + THEME_PATH + '/${name}/${version}/$1.css',
+    release: '/public/c/' + THEME_PATH + '/${name}/${version}/$1.css'
+}))
 .match("/components/(**.js)", {
     id: '${name}/${version}/$1',
     moduleId: '${name}/${version}/$1',
