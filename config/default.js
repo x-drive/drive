@@ -106,7 +106,7 @@ fis.match("/server/**.js", {
     "release": "/public/c/$1"
     ,url: '${urlPrefix}/c/$1',
 })
-.match("/components/(**).{styl,less,css,scss,sass}", Object.assign({
+.match("/components/(**).{styl,less,css,scss,sass}", Object.assign({}, {
     id: '${name}/${version}/$1.css',
     moduleId: '${name}/${version}/$1.css',
     isMod: true,
