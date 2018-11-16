@@ -9,6 +9,16 @@ const ALL_COMPONENT_REG_EXP = /@component\(['"](.*)['"]\)[;]?/g;
 // 获取 component 声明正则
 const COMPONENT_REG_EXP = /@component\(['"](.*)['"]\)/;
 
+
+
+/**
+ * 是否是数组
+ * @param  {Mix} subject 待判断的数据
+ */
+function isArray(subject) {
+    return Array.isArray(subject);
+}
+
 /**
  * 驼峰转连字符
  * @param  {String} str 原始字符串
@@ -19,10 +29,16 @@ function camelize2line(str) {
         return `-${str.toLowerCase()}`;
     });
 }
+var SUB_PACK_TEST_REG_EXP
+var projectSubpage = fis.get("project.subpages")
+if(projectSubpage!== undefined&&isArray(projectSubpage)){
+    eval("SUB_PACK_TEST_REG_EXP = /^\\/sub-packages\\/(" + projectSubpage.join("|") + ")\\/pages\\/[\\w\\/\\.-]+\\.js$/"); 
+}
+const component_name_reg = /^@(.*)$/ 
 
 module.exports = function (ret, conf, settings, opt) {
     var pages = Object.keys(ret.src).filter(function(name){
-        return PAGE_TEST_REG_EXP.test(name);
+        return PAGE_TEST_REG_EXP.test(name)||SUB_PACK_TEST_REG_EXP.test(name);
     });
     var dirs = {};
 
@@ -58,12 +74,14 @@ module.exports = function (ret, conf, settings, opt) {
 
                 // 每次都重新生成
                 pageJson.usingComponents = {};
-
                 while(components.length) {
                     let comStr = components.pop();
                     let com = comStr.match(COMPONENT_REG_EXP);
                     com = com && com[1] || null;
-                    if (com) {
+                    if(component_name_reg.test(com)){
+                        com = com.replace("@", "");
+                        pageJson.usingComponents[`${camelize2line(com)}`] = `../../components/${com}/${com}`;
+                    }else if (com) {
                         pageJson.usingComponents[`${camelize2line(com)}`] = `/components/${com}/${com}`;
                     }
                     content = content.replace(comStr, "");

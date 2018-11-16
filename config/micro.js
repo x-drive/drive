@@ -125,6 +125,16 @@ fis.match("*.tpl", {
         ,"useMap": false
         ,"useHash": false
     })
+    .match("sub-packages/(**.{less, css, wxss})", {
+        "isCssLike": true
+        ,"release" : "/project/sub-packages/$1"
+        ,"useCompile": true
+        ,"useDomain": true
+        ,"isJsLike": false
+        ,"useCache": false
+        ,"useMap": false
+        ,"useHash": false
+    })
     .match('.DS_Store', {
         "release": false
     })
@@ -154,6 +164,14 @@ fis.match("/pages/(**.{png, jpg})", {
     ,"url" : '/c/$1'
 });
 
+fis.match("/sub-packages/(**)/pages/(**.{png, jpg})", {
+    "release": `/public/${imageReleaseDir}/$0`
+    ,"url" : '$0'
+})
+.match("/sub-packages/(**)/components/(**.{png, jpg})", {
+    "release": `/public/${imageReleaseDir}/$0`
+    ,"url" : '$0'
+});
 // 各种业务处理
 fis.match("*.js", {
     "preprocessor": PLUGINS.handlMicroAppJs
