@@ -38,7 +38,7 @@ const component_name_reg = /^@(.*)$/
 
 module.exports = function (ret, conf, settings, opt) {
     var pages = Object.keys(ret.src).filter(function(name){
-        return PAGE_TEST_REG_EXP.test(name)||SUB_PACK_TEST_REG_EXP.test(name);
+        return PAGE_TEST_REG_EXP.test(name)||(SUB_PACK_TEST_REG_EXP&&SUB_PACK_TEST_REG_EXP.test(name));
     });
     var dirs = {};
 
