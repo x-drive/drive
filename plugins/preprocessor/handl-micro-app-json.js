@@ -8,10 +8,10 @@ const path = require("path");
 const pages = [];
 
 /**
- * 包含的sub pages
+ * 包含的subPackages
  * @type {object}
  */
-const subPages = {};
+const subPackages = {};
 
 /**
  * 排除的文件或文件夹判断正则
@@ -123,13 +123,13 @@ function init() {
             }
         }
     );
-    var projectSubpage = fis.get("project.subpages")
-    if(projectSubpage!== undefined&&isArray(projectSubpage)){
-        projectSubpage.forEach(function(item){
-            var subpagePath =  fis.project.getProjectPath('/')+"/sub-packages/"+item+"/pages";
-            if(checkFileStat(subpagePath)){
+    var projectSubPackages = fis.get("project.subPackages")
+    if(projectSubPackages!== undefined&&isArray(projectSubPackages)){
+        projectSubPackages.forEach(function(item){
+            var subPackagesPath =  fis.project.getProjectPath('/')+"/"+item+"/pages";
+            if(checkFileStat(subPackagesPath)){
                 walk(
-                    path.resolve(subpagePath )
+                    path.resolve(subPackagesPath )
                     ,(path, fileName) => {
                         if (isJs.test(path)) {
                             let fileInDir = path.split("pages")[1];
@@ -140,13 +140,13 @@ function init() {
                             if (alias) {
                                 modPages[item] = modPages[item] || {"items":[], "hide": true};
                                 modPages[item].items.push({
-                                    "url": "/sub-packages/"+item+"/"+filePath
+                                    "url": "/"+item+"/"+filePath
                                     ,"type": "redirect"
                                     ,"name": "subpack/"+item+"/"+alias
                                 });
                             }
-                            subPages[item] = subPages[item]||[]
-                            subPages[item].push(filePath);
+                            subPackages[item] = subPackages[item]||[]
+                            subPackages[item].push(filePath);
                         }
                     }
                 );
@@ -170,10 +170,10 @@ function handlAppJson(content, file, conf) {
         let body = JSON.parse(content);
         body.pages = pages;
         var subPack = []
-        for(var s in subPages) {
+        for(var s in subPackages) {
             subPack.push({
-                root:"sub-packages/"+s +"/",
-                pages:subPages[s]
+                root:""+s +"/",
+                pages:subPackages[s]
             })
         }
         body.subPackages = subPack;

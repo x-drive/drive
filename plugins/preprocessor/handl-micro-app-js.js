@@ -20,7 +20,7 @@ fis.on("plugin:appjson:inited", function(data){
  * @return {String}         处理后的文件内容
  */
 function handler(content, file, conf) {
-    if (file.subpath.indexOf("@conf/ent") > -1 && fis.get("project.entid") !== undefined) {
+    if (file.subpath.indexOf("@conf/ent") > -1) {
         var envtype = fis.get("project.envtype");
         let body = content.match(JSON_BODY_REGEXP);
         if (body && body[0]) {
@@ -29,6 +29,10 @@ function handler(content, file, conf) {
             body = {};
         }
         body.entCode = fis.get("project.entid");
+        
+        if( fis.get("project.apis") !== undefined){
+            body.apis = fis.get("project.apis");
+        }
         if (!body.type || body.type !== envtype) {
             body.type = envtype;
         }

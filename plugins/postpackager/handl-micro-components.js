@@ -30,9 +30,9 @@ function camelize2line(str) {
     });
 }
 var SUB_PACK_TEST_REG_EXP
-var projectSubpage = fis.get("project.subpages")
-if(projectSubpage!== undefined&&isArray(projectSubpage)){
-    eval("SUB_PACK_TEST_REG_EXP = /^\\/sub-packages\\/(" + projectSubpage.join("|") + ")\\/pages\\/[\\w\\/\\.-]+\\.js$/"); 
+var projectSubPackages = fis.get("project.subPackages")
+if(projectSubPackages!== undefined&&isArray(projectSubPackages)){
+    eval("SUB_PACK_TEST_REG_EXP = /^\\/(" + projectSubPackages.join("|") + ")\\/pages\\/[\\w\\/\\.-]+\\.js$/"); 
 }
 const component_name_reg = /^@(.*)$/ 
 
@@ -60,7 +60,7 @@ module.exports = function (ret, conf, settings, opt) {
 
             let content = file.getContent();
             let components = content.match(ALL_COMPONENT_REG_EXP);
-
+            
             if (components && components.length) {
                 let pageJsonPath = `${dirs[file.subdirname]}/${file.filename}.json`;
                 let hasJson = fis.util.isFile(pageJsonPath);
@@ -80,7 +80,12 @@ module.exports = function (ret, conf, settings, opt) {
                     com = com && com[1] || null;
                     if(component_name_reg.test(com)){
                         com = com.replace("@", "");
-                        pageJson.usingComponents[`${camelize2line(com)}`] = `../../components/${com}/${com}`;
+                        var arr= file.subpath.split('/')
+                        var urlFile=''
+                        for(var i =0;i<arr.length-3;i++){
+                            urlFile+="../"
+                        }
+                        pageJson.usingComponents[`${camelize2line(com)}`] = `${urlFile}components/${com}/${com}`;
                     }else if (com) {
                         pageJson.usingComponents[`${camelize2line(com)}`] = `/components/${com}/${com}`;
                     }
