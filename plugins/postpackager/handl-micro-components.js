@@ -102,6 +102,7 @@ module.exports = function (ret, conf, settings, opt) {
                             comPath = `/components/${com}/${com}`;
                             if(component_name_reg.test(com)){
                                 com = com.replace("@", "");
+                                comName = camelize2line(com);
                                 var arr= file.subpath.split('/')
                                 var urlFile=''
                                 for(var i =0;i<arr.length-3;i++){
