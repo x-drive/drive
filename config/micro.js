@@ -5,6 +5,9 @@ const PLUGINS = {
     ,"handlMicroComponents": require("../plugins/postpackager/handl-micro-components")
 }
 
+// 处理及初始化 component.json 相关逻辑
+require("../plugins/handle-component-json")();
+
 /**
  * 资源文件存储对应的环境文件夹名称
  * @type {Object}
