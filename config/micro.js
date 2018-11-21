@@ -68,6 +68,12 @@ if (imageDomain) {
 }
 
 fis.set("project.fileType.text", "wxml,wxss");
+var PAGE_NAME;
+var projectSubPackages = fis.get("project.subPackages")
+if(projectSubPackages!== undefined){
+    PAGE_NAME = "{" + projectSubPackages.join(",") + "}"; 
+}
+PAGE_NAME =PAGE_NAME||'(**)'
 
 // 编译规则
 
@@ -128,6 +134,16 @@ fis.match("*.tpl", {
         ,"useMap": false
         ,"useHash": false
     })
+    .match(`/${PAGE_NAME}/(**)/(**.{less, css, wxss})`, {
+        "isCssLike": true
+        ,"release" :"/project/$0"
+        ,"useCompile": true
+        ,"useDomain": true
+        ,"isJsLike": false
+        ,"useCache": false
+        ,"useMap": false
+        ,"useHash": false
+    })
     .match('.DS_Store', {
         "release": false
     })
@@ -157,6 +173,14 @@ fis.match("/pages/(**.{png, jpg})", {
     ,"url" : '/c/$1'
 });
 
+fis.match(`/${PAGE_NAME}/pages/(**.{png, jpg})`, {
+    "release": `/public/${imageReleaseDir}/sub-packages/$0`
+    ,"url" : '/sub-packages$0'
+})
+.match(`/${PAGE_NAME}/components/(**.{png, jpg})`, {
+    "release": `/public/${imageReleaseDir}/sub-packages/$0`
+    ,"url" : '/sub-packages$0'
+});
 // 各种业务处理
 fis.match("*.js", {
     "preprocessor": PLUGINS.handlMicroAppJs

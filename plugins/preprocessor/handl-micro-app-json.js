@@ -8,6 +8,12 @@ const path = require("path");
 const pages = [];
 
 /**
+ * 包含的subPackages
+ * @type {object}
+ */
+const subPackages = {};
+
+/**
  * 排除的文件或文件夹判断正则
  * @type {Array}
  */
@@ -65,6 +71,27 @@ var isJs = /\.js$/;
 var modNameRegExp = /pages\/(.*\/){1}/;
 
 var inited = false;
+/**
+ * 是否是数组
+ * @param  {Mix} subject 待判断的数据
+ */
+function isArray(subject) {
+    return Array.isArray(subject);
+}
+/**
+ * 检测指定文件是否存在
+ * @param  {String}  pathStr    文件路径
+ * @return {Object}             文件信息，文件不存在为 null
+ */
+function checkFileStat(pathStr) {
+    var stat;
+    try {
+        stat = fs.statSync(pathStr);
+    } catch(e) {
+        stat = null;
+    }
+    return stat;
+}
 
 function init() {
     // 生成包含的 page
@@ -96,6 +123,37 @@ function init() {
             }
         }
     );
+    var projectSubPackages = fis.get("project.subPackages")
+    if(projectSubPackages!== undefined&&isArray(projectSubPackages)){
+        projectSubPackages.forEach(function(item){
+            var subPackagesPath =  fis.project.getProjectPath('/')+"/"+item+"/pages";
+            if(checkFileStat(subPackagesPath)){
+                walk(
+                    path.resolve(subPackagesPath )
+                    ,(path, fileName) => {
+                        if (isJs.test(path)) {
+                            let fileInDir = path.split("pages")[1];
+                            let alias = fileInDir.replace("/"+fileName, "");
+                            let filePath = ("pages" + fileInDir).replace(isJs, "");
+            
+                            fileName = fileName.replace(isJs, "");
+                            if (alias) {
+                                modPages[item] = modPages[item] || {"items":[], "hide": true};
+                                modPages[item].items.push({
+                                    "url": "/"+item+"/"+filePath
+                                    ,"type": "redirect"
+                                    ,"name": "subpack/"+item+"/"+alias
+                                });
+                            }
+                            subPackages[item] = subPackages[item]||[]
+                            subPackages[item].push(filePath);
+                        }
+                    }
+                );
+            }
+            
+        })
+    }
     inited = true;
 }
 
@@ -111,6 +169,14 @@ function handlAppJson(content, file, conf) {
         // 把 pages 写到 app.json 中
         let body = JSON.parse(content);
         body.pages = pages;
+        var subPack = []
+        for(var s in subPackages) {
+            subPack.push({
+                root:""+s +"/",
+                pages:subPackages[s]
+            })
+        }
+        body.subPackages = subPack;
         content = JSON.stringify(body, 4, 4);
     }
     return content;

@@ -31,6 +31,9 @@ function handler(content, file, conf) {
         if (typeof fis.get("project.entid") !== undefined) {
             body.entCode = fis.get("project.entid");
         }
+        if( fis.get("project.apis") !== undefined){
+            body.apis = fis.get("project.apis");
+        }
         if (!body.type || body.type !== envtype) {
             body.type = envtype;
         }

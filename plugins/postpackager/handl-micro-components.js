@@ -9,6 +9,16 @@ const ALL_COMPONENT_REG_EXP = /@component\(['"](.*)['"]\)[;]?/g;
 // 获取 component 声明正则
 const COMPONENT_REG_EXP = /@component\(['"](.*)['"]\)/;
 
+
+
+/**
+ * 是否是数组
+ * @param  {Mix} subject 待判断的数据
+ */
+function isArray(subject) {
+    return Array.isArray(subject);
+}
+
 /**
  * 驼峰转连字符
  * @param  {String} str 原始字符串
@@ -19,6 +29,12 @@ function camelize2line(str) {
         return `-${str.toLowerCase()}`;
     });
 }
+var SUB_PACK_TEST_REG_EXP
+var projectSubPackages = fis.get("project.subPackages")
+if(projectSubPackages!== undefined&&isArray(projectSubPackages)){
+    eval("SUB_PACK_TEST_REG_EXP = /^\\/(" + projectSubPackages.join("|") + ")\\/pages\\/[\\w\\/\\.-]+\\.js$/"); 
+}
+const component_name_reg = /^@(.*)$/ 
 
 // 公共组件配置对象
 var componentsModules = {};
@@ -33,7 +49,7 @@ fis.on("plugin:componentjson:inited", function(data){
 
 module.exports = function (ret, conf, settings, opt) {
     var pages = Object.keys(ret.src).filter(function(name){
-        return PAGE_TEST_REG_EXP.test(name);
+        return PAGE_TEST_REG_EXP.test(name)||(SUB_PACK_TEST_REG_EXP&&SUB_PACK_TEST_REG_EXP.test(name));
     });
     var dirs = {};
 
@@ -55,7 +71,7 @@ module.exports = function (ret, conf, settings, opt) {
 
             let content = file.getContent();
             let components = content.match(ALL_COMPONENT_REG_EXP);
-
+            
             if (components && components.length) {
                 let pageJsonPath = `${dirs[file.subdirname]}/${file.filename}.json`;
                 let hasJson = fis.util.isFile(pageJsonPath);
@@ -69,7 +85,6 @@ module.exports = function (ret, conf, settings, opt) {
 
                 // 每次都重新生成
                 pageJson.usingComponents = {};
-
                 while(components.length) {
                     let comStr = components.pop();
                     let com = comStr.match(COMPONENT_REG_EXP);
@@ -85,6 +100,15 @@ module.exports = function (ret, conf, settings, opt) {
                             comPath = `/component_modules/${componentModuleVersion}/${com}/${com}`;
                         } else {
                             comPath = `/components/${com}/${com}`;
+                            if(component_name_reg.test(com)){
+                                com = com.replace("@", "");
+                                var arr= file.subpath.split('/')
+                                var urlFile=''
+                                for(var i =0;i<arr.length-3;i++){
+                                    urlFile+="../"
+                                }
+                                comPath = `${urlFile}components/${com}/${com}`;
+                            }
                         }
                         pageJson.usingComponents[comName] = comPath;
                     }
