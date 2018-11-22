@@ -106,10 +106,6 @@ fis.match("/server/**.js", {
     "release": "/public/c/$1"
     ,url: '${urlPrefix}/c/$1',
 })
-.match("/components/(**)", {
-    "release": '/public/c/${name}/${version}/$1'
-    ,"url":'${urlPrefix}/c/${name}/${version}/$1'
-})
 .match("/components/(**).{styl,less,css,scss,sass}", Object.assign({}, {
     id: '${name}/${version}/$1.css',
     moduleId: '${name}/${version}/$1.css',
@@ -123,7 +119,7 @@ fis.match("/server/**.js", {
     moduleId: THEME_PATH +'/${name}/${version}/$1.css',
     url: '${urlPrefix}/c/' + THEME_PATH + '/${name}/${version}/$1.css',
     release: '/public/c/' + THEME_PATH + '/${name}/${version}/$1.css'
-}))
+}), true)
 .match("/components/(**.js)", {
     id: '${name}/${version}/$1',
     moduleId: '${name}/${version}/$1',
@@ -137,6 +133,10 @@ fis.match("/server/**.js", {
 .match("/components/(**.tpl)", {
     isHtmlLike: true,
     release: '/views/c/${name}/${version}/$1'
+})
+.match("/components/(**)", {
+    "release": '/public/c/${name}/${version}/$1'
+    ,"url":'${urlPrefix}/c/${name}/${version}/$1'
 })
 .match("/views/(**.tpl)", {
     useCache: false,
