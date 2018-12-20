@@ -171,7 +171,7 @@ const POST_PACKAGER = [plugins.framwork];
 const isObject = require("../components/util").isObject;
 
 // 插件相关设置
-var pluginsConf = fis.get("project.plugins");
+var pluginsConf = fis.get("project.plugins") || {};
 
 // css 自动补完插件配置或开关
 var customAutoPrefix = pluginsConf && pluginsConf.autoprefix || null;
@@ -190,7 +190,9 @@ if (customAutoPrefix) {
 
 switch (fis.get("project.mode")) {
     case "mobile":
-        POST_PACKAGER.push(plugins.genRouter);
+        if (pluginsConf.enableAutoRouter !== false) {
+            POST_PACKAGER.push(plugins.genRouter);
+        }
         if (customAutoPrefix) {
             fis.media("prod").match('**.{css, less}',{
                 postprocessor : fis.plugin("autoprefixer", autoPrefixConf)
