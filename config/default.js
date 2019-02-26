@@ -10,7 +10,8 @@ const plugins = {
     framwork: require('../plugins/postpackager/framework-conf'),
     rand: require('../plugins/preprocessor/rand'),
     genRouter: require('../plugins/postpackager/gen-router'),
-    LessPluginTheme: require('../plugins/preprocessor/handl-theme')
+    LessPluginTheme: require('../plugins/preprocessor/handl-theme'),
+    babel: require('../plugins/parse/babel')
 }
 
 const theme = argv.theme || fis.get('project.theme')
@@ -44,6 +45,12 @@ fis.match("*.less", {
     })
     ,"rExt": ".css"
 })
+
+if (fis.get('babel') === true) {
+    fis.match("/components/(**.js)", {
+        "parser": plugins.babel
+    })
+}
 
 fis.match("/server/**.js", {
     "optimizer": null

@@ -1,6 +1,6 @@
 {
     "name": "dirve",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "description": "",
     "main": "index.js",
     "preferGlobal": true,
@@ -19,6 +19,8 @@
     },
     "license": "MIT",
     "dependencies": {
+        "@babel/core": "7.3.4",
+        "@babel/preset-env": "7.3.4",
         "dirve-command-init": "^1.0.0",
         "dirve-command-server": "1.0.0",
         "fis-parser-less-2.x": "^0.1.4",
