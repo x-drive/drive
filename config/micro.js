@@ -88,7 +88,7 @@ fis.media("prod")
     });
 
 fis.match("*.less",{
-    "parser": fis.plugin("less-2.x")
+    "parser": fis.plugin("less")
     ,"rExt": ".wxss"
 });
 fis.match("*.tpl", {
