@@ -1,22 +1,23 @@
 var babel = require('@babel/core')
 
 const DEF_OPT = {
-	cwd: __dirname,
-	presets: [
-		[
-			'@babel/preset-env',
-			{
-				modules: false,
-				targets: {
-					browsers: ['> 1%', 'last 2 versions', 'not ie <= 8'],
-				},
-			},
-		],
-	],
+    cwd: __dirname,
+    presets: [
+        [
+            '@babel/preset-env',
+            {
+                modules: false,
+                targets: {
+                    browsers: ['> 1%', 'last 2 versions', 'not ie <= 8']
+                }
+            }
+        ]
+    ],
+    plugins: ['@babel/plugin-proposal-class-properties']
 }
 
 module.exports = function(content, file, options) {
-	var opt = fis.get('babel.config') || DEF_OPT
-	var result = babel.transformSync(content, opt)
-	return result.code
+    var opt = fis.get('babel.config') || DEF_OPT
+    var result = babel.transformSync(content, opt)
+    return result.code
 }
