@@ -186,7 +186,7 @@ var customAutoPrefix = pluginsConf && pluginsConf.autoprefix || null;
 var autoPrefixConf = {
     "browsers": ["> 1%", "last 4 versions"]
     ,"cascade": true
-    ,"flexboxfixer": true
+    ,"flexboxfixer": false
 };
 
 if (customAutoPrefix) {
