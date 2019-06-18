@@ -11,7 +11,8 @@ const plugins = {
     rand: require('../plugins/preprocessor/rand'),
     genRouter: require('../plugins/postpackager/gen-router'),
     LessPluginTheme: require('../plugins/preprocessor/handl-theme'),
-    babel: require('../plugins/parse/babel')
+    babel: require('../plugins/parse/babel'),
+    less: require('../plugins/parse/less')
 }
 
 const theme = argv.theme || fis.get('project.theme')
@@ -42,7 +43,7 @@ fis.match("*.less", {
         plugins: [new plugins.LessPluginTheme({
             theme
         })]
-    }) : fis.plugin("less")
+    }) : plugins.less
     ,"rExt": ".css"
 })
 
