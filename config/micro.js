@@ -3,6 +3,7 @@ const PLUGINS = {
     "handlMicroAppJson": require("../plugins/preprocessor/handl-micro-app-json")
     ,"handlMicroAppJs": require("../plugins/preprocessor/handl-micro-app-js")
     ,"handlMicroComponents": require("../plugins/postpackager/handl-micro-components")
+    ,less: require('../plugins/parse/less')
 }
 
 // 处理及初始化 component.json 相关逻辑
@@ -88,7 +89,7 @@ fis.media("prod")
     });
 
 fis.match("*.less",{
-    "parser": fis.plugin("less")
+    "parser": PLUGINS.less
     ,"rExt": ".wxss"
 });
 fis.match("*.tpl", {
