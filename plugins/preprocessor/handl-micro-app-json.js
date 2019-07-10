@@ -178,6 +178,14 @@ function handlAppJson(content, file, conf) {
         }
         body.subPackages = subPack;
         content = JSON.stringify(body, 4, 4);
+        var f = fis.file.wrap(file.realpath + '.js');
+        f.cache = file.cache;
+        f.setContent(`export default ${content}`);
+        fis.compile.process(f);
+        f.links.forEach(function(derived) {
+            file.addLink(derived);
+        });
+        file.derived.push(f);
     }
     return content;
 }
