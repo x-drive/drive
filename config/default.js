@@ -12,7 +12,8 @@ const plugins = {
     genRouter: require('../plugins/postpackager/gen-router'),
     LessPluginTheme: require('../plugins/preprocessor/handl-theme'),
     babel: require('../plugins/parse/babel'),
-    less: require('../plugins/parse/less')
+    less: require('../plugins/parse/less'),
+    inject: require('../plugins/preprocessor/inject')
 }
 
 const theme = argv.theme || fis.get('project.theme')
@@ -173,6 +174,12 @@ fis.hook('commonjs')
 fis.match('*.html', {
     preprocessor: plugins.rand
 })
+
+if (fis.get('project.injection')) {
+    fis.match('*.js', {
+        preprocessor: plugins.inject
+    })
+}
 
 const POST_PACKAGER = [plugins.framwork];
 
