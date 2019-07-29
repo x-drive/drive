@@ -1,3 +1,4 @@
+const url = require('url')
 /**
  * 读取json内容，加一个统一的错误处理
  * @param {String} content
@@ -100,6 +101,10 @@ module.exports = function (ret, conf, settings, opt){
     map.alias = {};
     map.deps = {};
     map.prefix = map.prefix || '__DIRVE__' + (fis.config.get('urlPrefix').toUpperCase() || '') + '/'
+    var domain = fis.get('project.domain')
+    if (domain) {
+        map.comboPattern = url.resolve(domain, map.comboPattern)
+    }
     makeComponentModulesAlias(ret.src['/component.json'], map, ret);
     fis.util.map(aliasConfig, function(name, subpath){
         var file = ret.src['/' + subpath.replace(/^\//, '')];

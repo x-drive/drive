@@ -18,6 +18,13 @@ const plugins = {
 
 const theme = argv.theme || fis.get('project.theme')
 const THEME_PATH = '@theme/' + theme
+// 是否开启 cdn
+const CDN_DOMAIN = argv.CDN_DOMAIN || fis.get('res.domain') || ''
+if (CDN_DOMAIN) {
+    fis.set("project.domain", CDN_DOMAIN)
+}
+// 是否启用 hash
+var RES_USEHASH = argv.RES_USE_HASH || fis.get('res.useHash') || false
 
 fis.media("prod")
     .match("*.{css, less}", {
@@ -95,8 +102,8 @@ fis.match("/server/**.js", {
     isMod: true,
     useHash: false,
     useSameNameRequire: true,
-    "release": "/public/c/$1"
-    ,url: '${urlPrefix}/c/$1'
+    "release": "/public/c/$1",
+    url: '${urlPrefix}/c/$1'
 })
 .match("/component_modules/(**).{styl,less,css,scss,sass}", {
     id: '$1.css',
@@ -112,8 +119,8 @@ fis.match("/server/**.js", {
     release: '/views/c/$1'
 })
 .match("/component_modules/(**)", {
-    "release": "/public/c/$1"
-    ,url: '${urlPrefix}/c/$1',
+    "release": "/public/c/$1",
+    url: '${urlPrefix}/c/$1'
 })
 .match("/components/(**).{styl,less,css,scss,sass}", Object.assign({}, {
     id: '${name}/${version}/$1.css',
@@ -136,16 +143,16 @@ fis.match("/server/**.js", {
     isComponent: true,
     useHash: false,
     useSameNameRequire: true,
-    "release": '/public/c/${name}/${version}/$1'
-    ,"url":'${urlPrefix}/c/${name}/${version}/$1'
+    "release": '/public/c/${name}/${version}/$1',
+    "url":'${urlPrefix}/c/${name}/${version}/$1'
 })
 .match("/components/(**.tpl)", {
     isHtmlLike: true,
     release: '/views/c/${name}/${version}/$1'
 })
 .match("/components/(**)", {
-    "release": '/public/c/${name}/${version}/$1'
-    ,"url":'${urlPrefix}/c/${name}/${version}/$1'
+    "release": '/public/c/${name}/${version}/$1',
+    "url":'${urlPrefix}/c/${name}/${version}/$1'
 })
 .match("/views/(**.tpl)", {
     useCache: false,
@@ -212,6 +219,17 @@ switch (fis.get("project.mode")) {
             fis.media("prod").match('**.{css, less}',{
                 postprocessor : fis.plugin("autoprefixer", autoPrefixConf)
             });
+        }
+        if (CDN_DOMAIN) {
+            fis.match('image', {
+                useDomain: true,
+                domain: CDN_DOMAIN
+            })
+        }
+        if (RES_USEHASH) {
+            fis.match('image', {
+                useHash: RES_USEHASH
+            })
         }
     break;
 
