@@ -1,10 +1,4 @@
-var argv = {}
-process.argv.forEach(function(item){
-    if(item.indexOf("=") !== -1){
-        item = item.split("=")
-        argv[item[0]] = item[1] || undefined
-    }
-})
+var argv = process.env
 
 const plugins = {
     framwork: require('../plugins/postpackager/framework-conf'),
