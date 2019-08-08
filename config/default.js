@@ -14,7 +14,7 @@ const theme = argv.theme || fis.get('project.theme')
 const THEME_PATH = '@theme/' + theme
 // 是否开启 cdn
 var CDN_DOMAIN = argv.CDN_DOMAIN
-if (typeof fis.get('res.domain') !== undefined) {
+if (typeof fis.get('res.domain') !== 'undefined') {
     CDN_DOMAIN = fis.get('res.domain')
 }
 if (CDN_DOMAIN) {
@@ -22,7 +22,7 @@ if (CDN_DOMAIN) {
 }
 // 是否启用 hash
 var RES_USEHASH = argv.RES_USE_HASH
-if (typeof fis.get('res.useHash') !== undefined) {
+if (typeof fis.get('res.useHash') !== 'undefined') {
     RES_USEHASH = fis.get('res.useHash')
 }
 

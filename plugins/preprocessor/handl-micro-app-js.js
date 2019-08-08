@@ -28,7 +28,7 @@ function handler(content, file, conf) {
         } else {
             body = {};
         }
-        if (typeof fis.get("project.entid") !== undefined) {
+        if (typeof fis.get("project.entid") !== 'undefined') {
             body.entCode = fis.get("project.entid");
         }
         if( fis.get("project.apis") !== undefined){
@@ -39,7 +39,7 @@ function handler(content, file, conf) {
         }
         body.buildTime = new Date().toLocaleString()
         body.appVersion = fis.get("version")
-        if (typeof fis.get("project.apis") !== undefined) {
+        if (typeof fis.get("project.apis") !== 'undefined') {
             body.apis = fis.get("project.apis");
         }
         content = content.replace(
