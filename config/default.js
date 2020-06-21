@@ -144,7 +144,8 @@ fis.match("/server/**.js", {
     useHash: false,
     useSameNameRequire: true,
     "release": '/public/c/${name}/${version}/$1',
-    "url":'${urlPrefix}/c/${name}/${version}/$1'
+    "url":'${urlPrefix}/c/${name}/${version}/$1',
+    lint: fis.plugin('eslint-noisy', fis.get('eslint'))
 })
 .match("/components/(**.tpl)", {
     isHtmlLike: true,
