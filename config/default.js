@@ -11,7 +11,37 @@ const plugins = {
 }
 
 const theme = argv.theme || fis.get('project.theme')
-const THEME_PATH = '@theme/' + theme
+const THEME_PATH = '@theme/' + theme;
+const { resolve } = require('path');
+const { existsSync, readFileSync } = require('fs');
+
+//components 内部的 js 文件检测配置
+var componentsLintConf = {
+    id: '${name}/${version}/$1',
+    moduleId: '${name}/${version}/$1',
+    isMod: true,
+    isComponent: true,
+    useHash: false,
+    useSameNameRequire: true,
+    "release": '/public/c/${name}/${version}/$1',
+    "url": '${urlPrefix}/c/${name}/${version}/$1'
+};
+
+//.eslintrc 在项目中的位置
+var eslintPath = resolve(process.cwd(), ".eslintrc");
+//. eslintrc 文件是否存在
+var esLintExist = existsSync(eslintPath);
+
+//开启了 eslint 且有配置文件，才会开启 eslint
+if (fis.get("eslint") && esLintExist) {
+    let eslintConf;
+    eslintConf = readFileSync(eslintPath);
+    eslintConf = eslintConf.toString();
+    eslintConf = JSON.parse(eslintConf);
+    console.log(typeof eslintConf);
+    componentsLintConf.lint = fis.plugin('eslint-noisy', eslintConf) //eslint 这里应该属于可配置的
+}
+
 // 是否开启 cdn
 var CDN_DOMAIN = argv.CDN_DOMAIN
 if (typeof fis.get('res.domain') !== 'undefined') {
@@ -51,8 +81,8 @@ fis.match("*.less", {
         plugins: [new plugins.LessPluginTheme({
             theme
         })]
-    }) : plugins.less
-    ,"rExt": ".css"
+    }) : plugins.less,
+    "rExt": ".css"
 })
 
 if (fis.get('babel') === true) {
@@ -62,120 +92,110 @@ if (fis.get('babel') === true) {
 }
 
 fis.match("/server/**.js", {
-    "optimizer": null
-    ,"isMod": false
-    ,"useCompile": false
-    ,"isJsLike": false
-    ,"useCache": false
-    ,"useHash": false
-    ,"isJsLike": false
-    ,"isCssLike": false
-    ,"useMap": false
-})
-.match("/@server/(**)", {
-    "isMod": false
-    ,"optimizer": null
-    ,"useCompile": false
-    ,"isJsLike": false
-    ,"useCache": false
-    ,"useHash": false
-    ,"isJsLike": false
-    ,"isCssLike": false
-    ,"useMap": false
-    ,"release": "/server/$1"
-})
-.match("/@server/conf/(**)", {
-    "optimizer": null
-    ,"useCompile": false
-    ,"isJsLike": false
-    ,"useCache": false
-    ,"useHash": false
-    ,"isJsLike": false
-    ,"isCssLike": false
-    ,"useMap": false
-    ,"release":"/server/conf/@conf/$1"
-    ,"isMod": false
-})
-.match("/component_modules/(**.js)", {
-    id: '$1',
-    moduleId: '$1',
-    isMod: true,
-    useHash: false,
-    useSameNameRequire: true,
-    "release": "/public/c/$1",
-    url: '${urlPrefix}/c/$1'
-})
-.match("/component_modules/(**).{styl,less,css,scss,sass}", {
-    id: '$1.css',
-    moduleId: '$1.css',
-    isMod: true,
-    useSprite: true,
-    useHash: false,
-    url: '${urlPrefix}/c/$1.css',
-    release: '/public/c/$1.css'
-})
-.match("/component_modules/(**.tpl)", {
-    isHtmlLike: true,
-    release: '/views/c/$1'
-})
-.match("/component_modules/(**)", {
-    "release": "/public/c/$1",
-    url: '${urlPrefix}/c/$1'
-})
-.match("/components/(**).{styl,less,css,scss,sass}", Object.assign({}, {
-    id: '${name}/${version}/$1.css',
-    moduleId: '${name}/${version}/$1.css',
-    isMod: true,
-    useSprite: true,
-    useHash: false,
-    url: '${urlPrefix}/c/${name}/${version}/$1.css',
-    release: '/public/c/${name}/${version}/$1.css'
-}, theme && {
-    id: THEME_PATH +'/${name}/${version}/$1.css',
-    moduleId: THEME_PATH +'/${name}/${version}/$1.css',
-    url: '${urlPrefix}/c/' + THEME_PATH + '/${name}/${version}/$1.css',
-    release: '/public/c/' + THEME_PATH + '/${name}/${version}/$1.css'
-}), true)
-.match("/components/(**.js)", {
-    id: '${name}/${version}/$1',
-    moduleId: '${name}/${version}/$1',
-    isMod: true,
-    isComponent: true,
-    useHash: false,
-    useSameNameRequire: true,
-    "release": '/public/c/${name}/${version}/$1',
-    "url":'${urlPrefix}/c/${name}/${version}/$1',
-    lint: fis.plugin('eslint-noisy', fis.get('eslint'))
-})
-.match("/components/(**.tpl)", {
-    isHtmlLike: true,
-    release: '/views/c/${name}/${version}/$1'
-})
-.match("/components/(**)", {
-    "release": '/public/c/${name}/${version}/$1',
-    "url":'${urlPrefix}/c/${name}/${version}/$1'
-})
-.match("/views/(**.tpl)", {
-    useCache: false,
-    isViews: true,
-    isHtmlLike: true,
-    release: '/views/${name}/${version}/$1'
-})
-.match("/views/(**.html)", {
-    useCache: false,
-    isViews: true,
-    "release": '/public/${name}/${version}/$1',
-    url: '${urlPrefix}/${name}/${version}/$1'
-})
-.match('/components', {
-    release: false
-})
-.match('/component_modules', {
-    release: false
-})
-.match('.DS_Store', {
-    release: false
-})
+        "optimizer": null,
+        "isMod": false,
+        "useCompile": false,
+        "isJsLike": false,
+        "useCache": false,
+        "useHash": false,
+        "isJsLike": false,
+        "isCssLike": false,
+        "useMap": false
+    })
+    .match("/@server/(**)", {
+        "isMod": false,
+        "optimizer": null,
+        "useCompile": false,
+        "isJsLike": false,
+        "useCache": false,
+        "useHash": false,
+        "isJsLike": false,
+        "isCssLike": false,
+        "useMap": false,
+        "release": "/server/$1"
+    })
+    .match("/@server/conf/(**)", {
+        "optimizer": null,
+        "useCompile": false,
+        "isJsLike": false,
+        "useCache": false,
+        "useHash": false,
+        "isJsLike": false,
+        "isCssLike": false,
+        "useMap": false,
+        "release": "/server/conf/@conf/$1",
+        "isMod": false
+    })
+    .match("/component_modules/(**.js)", {
+        id: '$1',
+        moduleId: '$1',
+        isMod: true,
+        useHash: false,
+        useSameNameRequire: true,
+        "release": "/public/c/$1",
+        url: '${urlPrefix}/c/$1'
+    })
+    .match("/component_modules/(**).{styl,less,css,scss,sass}", {
+        id: '$1.css',
+        moduleId: '$1.css',
+        isMod: true,
+        useSprite: true,
+        useHash: false,
+        url: '${urlPrefix}/c/$1.css',
+        release: '/public/c/$1.css'
+    })
+    .match("/component_modules/(**.tpl)", {
+        isHtmlLike: true,
+        release: '/views/c/$1'
+    })
+    .match("/component_modules/(**)", {
+        "release": "/public/c/$1",
+        url: '${urlPrefix}/c/$1'
+    })
+    .match("/components/(**).{styl,less,css,scss,sass}", Object.assign({}, {
+        id: '${name}/${version}/$1.css',
+        moduleId: '${name}/${version}/$1.css',
+        isMod: true,
+        useSprite: true,
+        useHash: false,
+        url: '${urlPrefix}/c/${name}/${version}/$1.css',
+        release: '/public/c/${name}/${version}/$1.css'
+    }, theme && {
+        id: THEME_PATH + '/${name}/${version}/$1.css',
+        moduleId: THEME_PATH + '/${name}/${version}/$1.css',
+        url: '${urlPrefix}/c/' + THEME_PATH + '/${name}/${version}/$1.css',
+        release: '/public/c/' + THEME_PATH + '/${name}/${version}/$1.css'
+    }), true)
+    .match("/components/(**.js)", componentsLintConf)
+    .match("/components/(**.tpl)", {
+        isHtmlLike: true,
+        release: '/views/c/${name}/${version}/$1'
+    })
+    .match("/components/(**)", {
+        "release": '/public/c/${name}/${version}/$1',
+        "url": '${urlPrefix}/c/${name}/${version}/$1'
+    })
+    .match("/views/(**.tpl)", {
+        useCache: false,
+        isViews: true,
+        isHtmlLike: true,
+        release: '/views/${name}/${version}/$1'
+    })
+    .match("/views/(**.html)", {
+        useCache: false,
+        isViews: true,
+        "release": '/public/${name}/${version}/$1',
+        url: '${urlPrefix}/${name}/${version}/$1'
+    })
+    .match('/components', {
+        release: false
+    })
+    .match('/component_modules', {
+        release: false
+    })
+    .match('.DS_Store', {
+        release: false
+    })
 
 fis.hook('commonjs')
 
@@ -200,9 +220,9 @@ var pluginsConf = fis.get("project.plugins") || {};
 var customAutoPrefix = pluginsConf && pluginsConf.autoprefix || null;
 // 默认自动补完配置
 var autoPrefixConf = {
-    "browsers": ["> 1%", "last 4 versions"]
-    ,"cascade": true
-    ,"flexboxfixer": false
+    "browsers": ["> 1%", "last 4 versions"],
+    "cascade": true,
+    "flexboxfixer": false
 };
 
 if (customAutoPrefix) {
@@ -217,8 +237,8 @@ switch (fis.get("project.mode")) {
             POST_PACKAGER.push(plugins.genRouter);
         }
         if (customAutoPrefix) {
-            fis.media("prod").match('**.{css, less}',{
-                postprocessor : fis.plugin("autoprefixer", autoPrefixConf)
+            fis.media("prod").match('**.{css, less}', {
+                postprocessor: fis.plugin("autoprefixer", autoPrefixConf)
             });
         }
         if (CDN_DOMAIN) {
@@ -232,13 +252,13 @@ switch (fis.get("project.mode")) {
                 useHash: RES_USEHASH
             })
         }
-    break;
+        break;
 
     case "desktop":
-        fis.media("prod").match('**.{css, less}',{
-            postprocessor : fis.plugin("autoprefixer", autoPrefixConf)
+        fis.media("prod").match('**.{css, less}', {
+            postprocessor: fis.plugin("autoprefixer", autoPrefixConf)
         });
-    break;
+        break;
 }
 
 customAutoPrefix = null;
@@ -247,3 +267,5 @@ autoPrefixConf = null;
 fis.match("::package", {
     postpackager: POST_PACKAGER
 });
+console.log('eslintConf:');
+console.log(fis.get('eslint'));
